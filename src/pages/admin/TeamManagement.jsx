@@ -27,8 +27,8 @@ const TeamManagement = () => {
   });
 
   const [assignForm, setAssignForm] = useState({
-    userId: '',
-    teamId: ''
+    userId: 'no-user',
+    teamId: 'no-team'
   });
 
   const colorOptions = [
@@ -64,8 +64,10 @@ const TeamManagement = () => {
 
   const handleAssignUser = (e) => {
     e.preventDefault();
-    assignUserToTeam(assignForm.userId, assignForm.teamId);
-    setAssignForm({ userId: '', teamId: '' });
+    if (assignForm.userId !== 'no-user' && assignForm.teamId !== 'no-team') {
+      assignUserToTeam(assignForm.userId, assignForm.teamId);
+    }
+    setAssignForm({ userId: 'no-user', teamId: 'no-team' });
     setIsAssignUserOpen(false);
   };
 
@@ -110,6 +112,7 @@ const TeamManagement = () => {
                         <SelectValue placeholder="Choose a user" />
                       </SelectTrigger>
                       <SelectContent>
+                        <SelectItem value="no-user">Choose a user</SelectItem>
                         {unassignedUsers.map(user => (
                           <SelectItem key={user.id} value={user.id}>
                             {user.name} ({user.email})
@@ -125,6 +128,7 @@ const TeamManagement = () => {
                         <SelectValue placeholder="Choose a team" />
                       </SelectTrigger>
                       <SelectContent>
+                        <SelectItem value="no-team">Choose a team</SelectItem>
                         {teams.map(team => (
                           <SelectItem key={team.id} value={team.id}>
                             {team.name}

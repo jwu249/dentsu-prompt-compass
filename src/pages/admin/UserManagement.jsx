@@ -23,19 +23,27 @@ const UserManagement = () => {
     name: '',
     email: '',
     role: 'user',
-    teamId: ''
+    teamId: 'no-team'
   });
 
   const handleCreateUser = (e) => {
     e.preventDefault();
-    createUser(userForm);
-    setUserForm({ name: '', email: '', role: 'user', teamId: '' });
+    const userData = {
+      ...userForm,
+      teamId: userForm.teamId === 'no-team' ? '' : userForm.teamId
+    };
+    createUser(userData);
+    setUserForm({ name: '', email: '', role: 'user', teamId: 'no-team' });
     setIsCreateUserOpen(false);
   };
 
   const handleEditUser = (e) => {
     e.preventDefault();
-    updateUser(selectedUser.id, userForm);
+    const userData = {
+      ...userForm,
+      teamId: userForm.teamId === 'no-team' ? '' : userForm.teamId
+    };
+    updateUser(selectedUser.id, userData);
     setIsEditUserOpen(false);
     setSelectedUser(null);
   };
@@ -57,7 +65,7 @@ const UserManagement = () => {
       name: user.name,
       email: user.email,
       role: user.role,
-      teamId: user.teamId || ''
+      teamId: user.teamId || 'no-team'
     });
     setIsEditUserOpen(true);
   };
@@ -137,7 +145,7 @@ const UserManagement = () => {
                       <SelectValue placeholder="No team assigned" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">No team</SelectItem>
+                      <SelectItem value="no-team">No team</SelectItem>
                       {teams.map(team => (
                         <SelectItem key={team.id} value={team.id}>
                           {team.name}
@@ -307,7 +315,7 @@ const UserManagement = () => {
                     <SelectValue placeholder="No team assigned" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">No team</SelectItem>
+                    <SelectItem value="no-team">No team</SelectItem>
                     {teams.map(team => (
                       <SelectItem key={team.id} value={team.id}>
                         {team.name}
