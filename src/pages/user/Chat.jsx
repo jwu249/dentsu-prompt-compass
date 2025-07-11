@@ -6,15 +6,8 @@ import { Card } from '@/components/ui/card';
 import { Send, Bot, User } from 'lucide-react';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 
-interface Message {
-  id: string;
-  text: string;
-  sender: 'user' | 'bot';
-  timestamp: Date;
-}
-
 const Chat = () => {
-  const [messages, setMessages] = useState<Message[]>([
+  const [messages, setMessages] = useState([
     {
       id: '1',
       text: 'Hello! I\'m your AI assistant. How can I help you today?',
@@ -28,7 +21,7 @@ const Chat = () => {
   const handleSendMessage = async () => {
     if (!inputText.trim()) return;
 
-    const userMessage: Message = {
+    const userMessage = {
       id: Date.now().toString(),
       text: inputText,
       sender: 'user',
@@ -41,7 +34,7 @@ const Chat = () => {
 
     // Simulate AI response
     setTimeout(() => {
-      const botMessage: Message = {
+      const botMessage = {
         id: (Date.now() + 1).toString(),
         text: 'I understand your request. This is a simulated response from the AI assistant. In a real implementation, this would connect to your AI service.',
         sender: 'bot',
@@ -52,7 +45,7 @@ const Chat = () => {
     }, 2000);
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
+  const handleKeyPress = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSendMessage();

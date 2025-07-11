@@ -12,21 +12,8 @@ import { FileText, Upload, File, Clock, Check, X, Eye, MessageSquare } from 'luc
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { toast } from '@/components/ui/sonner';
 
-interface Submission {
-  id: string;
-  type: 'prompt' | 'pptx' | 'csv';
-  title: string;
-  content?: string;
-  fileName?: string;
-  submittedBy: string;
-  team: string;
-  submittedAt: Date;
-  status: 'pending' | 'approved' | 'denied';
-  adminComment?: string;
-}
-
 const AdminSubmissions = () => {
-  const [submissions, setSubmissions] = useState<Submission[]>([
+  const [submissions, setSubmissions] = useState([
     {
       id: '1',
       type: 'prompt',
@@ -60,11 +47,11 @@ const AdminSubmissions = () => {
     }
   ]);
 
-  const [selectedSubmission, setSelectedSubmission] = useState<Submission | null>(null);
+  const [selectedSubmission, setSelectedSubmission] = useState(null);
   const [reviewComment, setReviewComment] = useState('');
   const [isReviewDialogOpen, setIsReviewDialogOpen] = useState(false);
 
-  const handleReview = (submission: Submission, action: 'approve' | 'deny') => {
+  const handleReview = (submission, action) => {
     setSubmissions(prev => prev.map(sub => 
       sub.id === submission.id 
         ? { 
@@ -84,13 +71,13 @@ const AdminSubmissions = () => {
     setReviewComment('');
   };
 
-  const openReviewDialog = (submission: Submission) => {
+  const openReviewDialog = (submission) => {
     setSelectedSubmission(submission);
     setReviewComment(submission.adminComment || '');
     setIsReviewDialogOpen(true);
   };
 
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (status) => {
     switch (status) {
       case 'approved': return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
       case 'denied': return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
@@ -98,7 +85,7 @@ const AdminSubmissions = () => {
     }
   };
 
-  const getTypeIcon = (type: string) => {
+  const getTypeIcon = (type) => {
     switch (type) {
       case 'prompt': return FileText;
       case 'pptx': return Upload;
@@ -107,12 +94,12 @@ const AdminSubmissions = () => {
     }
   };
 
-  const filterSubmissions = (type?: string) => {
+  const filterSubmissions = (type) => {
     if (!type) return submissions;
     return submissions.filter(sub => sub.type === type);
   };
 
-  const SubmissionCard = ({ submission }: { submission: Submission }) => {
+  const SubmissionCard = ({ submission }) => {
     const Icon = getTypeIcon(submission.type);
     
     return (

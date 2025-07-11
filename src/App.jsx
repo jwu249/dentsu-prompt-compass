@@ -18,7 +18,7 @@ import AdminSubmissions from './pages/admin/AdminSubmissions';
 
 const queryClient = new QueryClient();
 
-const App: React.FC = () => {
+const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider defaultTheme="system" storageKey="dentsu-ui-theme">

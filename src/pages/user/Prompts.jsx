@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,18 +9,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Plus, FileText, Calendar, MessageSquare } from 'lucide-react';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 
-interface Prompt {
-  id: string;
-  name: string;
-  question: string;
-  expectedResponse: string;
-  status: 'pending' | 'approved' | 'denied';
-  lastEdited: Date;
-  adminComment?: string;
-}
-
 const Prompts = () => {
-  const [prompts, setPrompts] = useState<Prompt[]>([
+  const [prompts, setPrompts] = useState([
     {
       id: '1',
       name: 'Marketing Campaign Analysis',
@@ -48,7 +37,7 @@ const Prompts = () => {
   });
 
   const handleCreatePrompt = () => {
-    const prompt: Prompt = {
+    const prompt = {
       id: Date.now().toString(),
       name: newPrompt.name,
       question: newPrompt.question,
@@ -62,7 +51,7 @@ const Prompts = () => {
     setIsCreateDialogOpen(false);
   };
 
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (status) => {
     switch (status) {
       case 'approved': return 'bg-green-100 text-green-800';
       case 'denied': return 'bg-red-100 text-red-800';

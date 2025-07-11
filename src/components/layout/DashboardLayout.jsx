@@ -2,11 +2,7 @@
 import React from 'react';
 import Sidebar from './Sidebar';
 
-interface DashboardLayoutProps {
-  children: React.ReactNode;
-}
-
-const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
+const DashboardLayout = ({ children }) => {
   return (
     <div className="min-h-screen bg-background flex">
       <div className="w-64 flex-shrink-0">

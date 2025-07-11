@@ -1,25 +1,10 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-  role: 'admin' | 'user';
-  team: string;
-}
+const AuthContext = createContext(undefined);
 
-interface AuthContextType {
-  user: User | null;
-  login: (email: string, password: string) => Promise<void>;
-  logout: () => void;
-  isLoading: boolean;
-}
-
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -31,14 +16,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsLoading(false);
   }, []);
 
-  const login = async (email: string, password: string) => {
+  const login = async (email, password) => {
     setIsLoading(true);
     
     // Mock authentication - replace with real API
     await new Promise(resolve => setTimeout(resolve, 1000));
     
     if (email === 'admin@dentsu.com' && password === 'admin123') {
-      const adminUser: User = {
+      const adminUser = {
         id: '1',
         name: 'Admin User',
         email: 'admin@dentsu.com',
@@ -48,7 +33,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(adminUser);
       localStorage.setItem('dentsu_user', JSON.stringify(adminUser));
     } else if (email === 'user@dentsu.com' && password === 'user123') {
-      const regularUser: User = {
+      const regularUser = {
         id: '2',
         name: 'John Doe',
         email: 'user@dentsu.com',
