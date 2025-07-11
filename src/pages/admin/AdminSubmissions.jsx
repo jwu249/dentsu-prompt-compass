@@ -5,62 +5,27 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
-import { FileText, Upload, File, Clock, Check, X, Eye, MessageSquare } from 'lucide-react';
+import { FileText, Upload, File, Check, X, Eye, MessageSquare } from 'lucide-react';
 import DashboardLayout from '@/components/layout/DashboardLayout';
+import { useSubmissions } from '@/contexts/SubmissionsContext';
 import { toast } from '@/components/ui/sonner';
 
 const AdminSubmissions = () => {
-  const [submissions, setSubmissions] = useState([
-    {
-      id: '1',
-      type: 'prompt',
-      title: 'Marketing Campaign Analysis',
-      content: 'Analyze the effectiveness of our Q3 marketing campaign and provide insights for improvement.',
-      submittedBy: 'John Doe',
-      team: 'Marketing',
-      submittedAt: new Date('2024-01-15'),
-      status: 'pending'
-    },
-    {
-      id: '2',
-      type: 'pptx',
-      title: 'Q4 Presentation Template',
-      fileName: 'q4-template.pptx',
-      submittedBy: 'Sarah Smith',
-      team: 'Sales',
-      submittedAt: new Date('2024-01-14'),
-      status: 'pending'
-    },
-    {
-      id: '3',
-      type: 'csv',
-      title: 'Bulk Prompts Dataset',
-      fileName: 'bulk-prompts.csv',
-      submittedBy: 'Mike Johnson',
-      team: 'Data',
-      submittedAt: new Date('2024-01-13'),
-      status: 'approved',
-      adminComment: 'Great dataset, approved for use.'
-    }
-  ]);
+  const { getAllSubmissions, updateSubmissionStatus } = useSubmissions();
+  const submissions = getAllSubmissions();
 
   const [selectedSubmission, setSelectedSubmission] = useState(null);
   const [reviewComment, setReviewComment] = useState('');
   const [isReviewDialogOpen, setIsReviewDialogOpen] = useState(false);
 
   const handleReview = (submission, action) => {
-    setSubmissions(prev => prev.map(sub => 
-      sub.id === submission.id 
-        ? { 
-            ...sub, 
-            status: action === 'approve' ? 'approved' : 'denied',
-            adminComment: reviewComment || undefined
-          }
-        : sub
-    ));
+    updateSubmissionStatus(
+      submission.id, 
+      action === 'approve' ? 'approved' : 'denied',
+      reviewComment || undefined
+    );
 
     toast(`Submission ${action === 'approve' ? 'approved' : 'denied'} successfully`, {
       description: `${submission.title} has been ${action === 'approve' ? 'approved' : 'denied'}.`
@@ -99,6 +64,14 @@ const AdminSubmissions = () => {
     return submissions.filter(sub => sub.type === type);
   };
 
+  const formatFileSize = (bytes) => {
+    if (!bytes) return '';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  };
+
   const SubmissionCard = ({ submission }) => {
     const Icon = getTypeIcon(submission.type);
     
@@ -130,10 +103,34 @@ const AdminSubmissions = () => {
                 <p className="text-muted-foreground">{submission.content}</p>
               </div>
             )}
+            {submission.expectedResponse && (
+              <div>
+                <h4 className="font-medium text-foreground mb-1">Expected Response:</h4>
+                <p className="text-muted-foreground">{submission.expectedResponse}</p>
+              </div>
+            )}
+            {submission.teamDocuments && (
+              <div>
+                <h4 className="font-medium text-foreground mb-1">Team Documents:</h4>
+                <p className="text-muted-foreground">{submission.teamDocuments}</p>
+              </div>
+            )}
             {submission.fileName && (
               <div>
                 <h4 className="font-medium text-foreground mb-1">File:</h4>
-                <p className="text-muted-foreground">{submission.fileName}</p>
+                <div className="flex items-center space-x-2">
+                  <File size={16} className="text-blue-600" />
+                  <span className="text-muted-foreground">{submission.fileName}</span>
+                  {submission.fileSize && (
+                    <span className="text-muted-foreground">({formatFileSize(submission.fileSize)})</span>
+                  )}
+                </div>
+              </div>
+            )}
+            {submission.description && (
+              <div>
+                <h4 className="font-medium text-foreground mb-1">Description:</h4>
+                <p className="text-muted-foreground">{submission.description}</p>
               </div>
             )}
             {submission.adminComment && (
@@ -174,16 +171,26 @@ const AdminSubmissions = () => {
 
         <Tabs defaultValue="all" className="space-y-6">
           <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="all">All Submissions</TabsTrigger>
-            <TabsTrigger value="prompt">Prompts</TabsTrigger>
-            <TabsTrigger value="pptx">PowerPoint</TabsTrigger>
-            <TabsTrigger value="csv">CSV Files</TabsTrigger>
+            <TabsTrigger value="all">All Submissions ({submissions.length})</TabsTrigger>
+            <TabsTrigger value="prompt">Prompts ({filterSubmissions('prompt').length})</TabsTrigger>
+            <TabsTrigger value="pptx">PowerPoint ({filterSubmissions('pptx').length})</TabsTrigger>
+            <TabsTrigger value="csv">CSV Files ({filterSubmissions('csv').length})</TabsTrigger>
           </TabsList>
 
           <TabsContent value="all" className="space-y-4">
-            {submissions.map(submission => (
-              <SubmissionCard key={submission.id} submission={submission} />
-            ))}
+            {submissions.length === 0 ? (
+              <Card>
+                <CardContent className="text-center py-8">
+                  <FileText size={48} className="mx-auto text-gray-400 mb-4" />
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">No submissions yet</h3>
+                  <p className="text-gray-600">User submissions will appear here for review.</p>
+                </CardContent>
+              </Card>
+            ) : (
+              submissions.map(submission => (
+                <SubmissionCard key={submission.id} submission={submission} />
+              ))
+            )}
           </TabsContent>
 
           <TabsContent value="prompt" className="space-y-4">
@@ -230,11 +237,42 @@ const AdminSubmissions = () => {
                   </div>
                 )}
 
+                {selectedSubmission.expectedResponse && (
+                  <div>
+                    <Label>Expected Response:</Label>
+                    <div className="p-3 bg-muted rounded-lg mt-1">
+                      <p>{selectedSubmission.expectedResponse}</p>
+                    </div>
+                  </div>
+                )}
+
+                {selectedSubmission.teamDocuments && (
+                  <div>
+                    <Label>Team Documents:</Label>
+                    <div className="p-3 bg-muted rounded-lg mt-1">
+                      <p>{selectedSubmission.teamDocuments}</p>
+                    </div>
+                  </div>
+                )}
+
                 {selectedSubmission.fileName && (
                   <div>
                     <Label>File:</Label>
+                    <div className="p-3 bg-muted rounded-lg mt-1 flex items-center space-x-2">
+                      <File size={16} className="text-blue-600" />
+                      <span>{selectedSubmission.fileName}</span>
+                      {selectedSubmission.fileSize && (
+                        <span className="text-muted-foreground">({formatFileSize(selectedSubmission.fileSize)})</span>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {selectedSubmission.description && (
+                  <div>
+                    <Label>Description:</Label>
                     <div className="p-3 bg-muted rounded-lg mt-1">
-                      <p>{selectedSubmission.fileName}</p>
+                      <p>{selectedSubmission.description}</p>
                     </div>
                   </div>
                 )}
