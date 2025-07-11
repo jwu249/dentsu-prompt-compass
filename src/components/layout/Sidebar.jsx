@@ -48,6 +48,12 @@ const Sidebar = () => {
             <div>
               <h2 className="font-semibold text-foreground">Dentsu Portal</h2>
               <p className="text-sm text-muted-foreground capitalize">{user?.role}</p>
+              {user?.team && (
+                <p className="text-xs text-muted-foreground">{user.team} Team</p>
+              )}
+              {user?.instance && (
+                <p className="text-xs text-blue-600 font-medium">Instance: {user.instance}</p>
+              )}
             </div>
           </div>
         </div>
