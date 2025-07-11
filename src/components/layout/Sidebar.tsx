@@ -3,6 +3,7 @@ import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { 
   MessageSquare, 
   FileText, 
@@ -10,7 +11,8 @@ import {
   History, 
   LogOut,
   User,
-  Settings
+  Settings,
+  ClipboardCheck
 } from 'lucide-react';
 
 const Sidebar = () => {
@@ -27,7 +29,7 @@ const Sidebar = () => {
 
   const adminNavItems = [
     { path: '/admin', icon: Settings, label: 'Dashboard' },
-    { path: '/admin/submissions', icon: FileText, label: 'Review Submissions' },
+    { path: '/admin/submissions', icon: ClipboardCheck, label: 'Review Submissions' },
     { path: '/admin/teams', icon: User, label: 'Team Management' },
     { path: '/admin/users', icon: User, label: 'User Management' },
   ];
@@ -35,18 +37,21 @@ const Sidebar = () => {
   const navItems = user?.role === 'admin' ? adminNavItems : userNavItems;
 
   return (
-    <div className="h-full bg-white border-r border-gray-200 flex flex-col">
+    <div className="h-full bg-background border-r border-border flex flex-col">
       {/* Header */}
-      <div className="p-6 border-b border-gray-200">
-        <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold">D</span>
-          </div>
-          <div>
-            <h2 className="font-semibold text-gray-900">Dentsu Portal</h2>
-            <p className="text-sm text-gray-500 capitalize">{user?.role}</p>
+      <div className="p-6 border-b border-border">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center">
+              <span className="text-white font-bold">D</span>
+            </div>
+            <div>
+              <h2 className="font-semibold text-foreground">Dentsu Portal</h2>
+              <p className="text-sm text-muted-foreground capitalize">{user?.role}</p>
+            </div>
           </div>
         </div>
+        <ThemeToggle />
       </div>
 
       {/* Navigation */}
@@ -58,8 +63,8 @@ const Sidebar = () => {
             className={({ isActive }) =>
               `flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
                 isActive
-                  ? 'bg-red-50 text-red-700 border-r-2 border-red-600'
-                  : 'text-gray-700 hover:bg-gray-50'
+                  ? 'bg-red-50 text-red-700 border-r-2 border-red-600 dark:bg-red-900/20 dark:text-red-400 dark:border-red-400'
+                  : 'text-foreground hover:bg-muted'
               }`
             }
           >
@@ -70,20 +75,20 @@ const Sidebar = () => {
       </nav>
 
       {/* User Info & Logout */}
-      <div className="p-4 border-t border-gray-200">
+      <div className="p-4 border-t border-border">
         <div className="flex items-center space-x-3 mb-4">
-          <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
-            <User size={16} className="text-gray-600" />
+          <div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center">
+            <User size={16} className="text-muted-foreground" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-gray-900 truncate">{user?.name}</p>
-            <p className="text-xs text-gray-500 truncate">{user?.email}</p>
+            <p className="text-sm font-medium text-foreground truncate">{user?.name}</p>
+            <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
           </div>
         </div>
         <Button
           onClick={logout}
           variant="outline"
-          className="w-full justify-start text-gray-700 hover:text-red-600 hover:border-red-200"
+          className="w-full justify-start text-foreground hover:text-red-600 hover:border-red-200"
         >
           <LogOut size={16} className="mr-2" />
           Sign Out

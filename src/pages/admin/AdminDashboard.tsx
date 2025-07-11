@@ -11,29 +11,29 @@ const AdminDashboard = () => {
       title: 'Pending Submissions',
       value: '12',
       icon: Clock,
-      color: 'text-yellow-600',
-      bgColor: 'bg-yellow-100'
+      color: 'text-yellow-600 dark:text-yellow-400',
+      bgColor: 'bg-yellow-100 dark:bg-yellow-900/20'
     },
     {
       title: 'Total Users',
       value: '48',
       icon: Users,
-      color: 'text-blue-600',
-      bgColor: 'bg-blue-100'
+      color: 'text-blue-600 dark:text-blue-400',
+      bgColor: 'bg-blue-100 dark:bg-blue-900/20'
     },
     {
       title: 'Prompts Created',
       value: '156',
       icon: FileText,
-      color: 'text-green-600',
-      bgColor: 'bg-green-100'
+      color: 'text-green-600 dark:text-green-400',
+      bgColor: 'bg-green-100 dark:bg-green-900/20'
     },
     {
       title: 'Files Uploaded',
       value: '89',
       icon: Upload,
-      color: 'text-purple-600',
-      bgColor: 'bg-purple-100'
+      color: 'text-purple-600 dark:text-purple-400',
+      bgColor: 'bg-purple-100 dark:bg-purple-900/20'
     }
   ];
 
@@ -68,8 +68,8 @@ const AdminDashboard = () => {
     <DashboardLayout>
       <div className="p-6">
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
-          <p className="text-gray-600">Monitor and manage your Dentsu Prompt Portal</p>
+          <h1 className="text-2xl font-bold text-foreground">Admin Dashboard</h1>
+          <p className="text-muted-foreground">Monitor and manage your Dentsu Prompt Portal</p>
         </div>
 
         {/* Stats Grid */}
@@ -79,8 +79,8 @@ const AdminDashboard = () => {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">{stat.title}</p>
-                    <p className="text-3xl font-bold text-gray-900 mt-2">{stat.value}</p>
+                    <p className="text-sm font-medium text-muted-foreground">{stat.title}</p>
+                    <p className="text-3xl font-bold text-foreground mt-2">{stat.value}</p>
                   </div>
                   <div className={`w-12 h-12 rounded-lg ${stat.bgColor} flex items-center justify-center`}>
                     <stat.icon className={`w-6 h-6 ${stat.color}`} />
@@ -99,18 +99,18 @@ const AdminDashboard = () => {
           <CardContent>
             <div className="space-y-4">
               {recentActivity.map((activity) => (
-                <div key={activity.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                <div key={activity.id} className="flex items-center justify-between p-4 border border-border rounded-lg">
                   <div className="flex-1">
-                    <p className="text-sm text-gray-900">
+                    <p className="text-sm text-foreground">
                       <span className="font-medium">{activity.user}</span> {activity.action}
                     </p>
-                    <p className="text-sm text-gray-600">{activity.item}</p>
-                    <p className="text-xs text-gray-500 mt-1">{activity.time}</p>
+                    <p className="text-sm text-muted-foreground">{activity.item}</p>
+                    <p className="text-xs text-muted-foreground mt-1">{activity.time}</p>
                   </div>
                   <Badge className={
                     activity.status === 'pending' 
-                      ? 'bg-yellow-100 text-yellow-800' 
-                      : 'bg-green-100 text-green-800'
+                      ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-200' 
+                      : 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-200'
                   }>
                     {activity.status}
                   </Badge>
