@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useTeam } from '@/contexts/TeamContext';
 import DashboardLayout from '@/components/layout/DashboardLayout';
-import { Plus, Edit, Trash2, UserCheck, UserX, Search } from 'lucide-react';
+import { Plus, Edit, Trash2, UserCheck, UserX, Search, Users } from 'lucide-react';
 
 const UserManagement = () => {
   const { teams, users, createUser, updateUser, deleteUser, getTeamById } = useTeam();
@@ -89,19 +89,27 @@ const UserManagement = () => {
 
   return (
     <DashboardLayout>
-      <div className="p-6">
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-2xl font-bold text-foreground">User Management</h1>
-            <p className="text-muted-foreground">Manage users and their team assignments</p>
+      <div className="min-h-screen bg-background">
+        {/* Header Section */}
+        <div className="relative overflow-hidden bg-gradient-to-br from-chat-blue-light to-background border-b border-chat-border">
+          <div className="absolute top-8 left-1/2 transform -translate-x-1/2">
+            <div className="flex space-x-2">
+              <div className="w-6 h-6 bg-chat-blue transform rotate-45 rounded-sm opacity-80"></div>
+              <div className="w-4 h-4 bg-chat-blue transform rotate-45 rounded-sm mt-1 opacity-60"></div>
+            </div>
           </div>
-          <Dialog open={isCreateUserOpen} onOpenChange={setIsCreateUserOpen}>
-            <DialogTrigger asChild>
-              <Button className="bg-red-600 hover:bg-red-700">
-                <Plus className="w-4 h-4 mr-2" />
-                Create User
-              </Button>
-            </DialogTrigger>
+          
+          <div className="relative z-10 p-8 text-center">
+            <h1 className="text-4xl font-bold text-foreground mb-2">User Management</h1>
+            <p className="text-muted-foreground text-lg mb-8">Manage users and their team assignments</p>
+            
+            <Dialog open={isCreateUserOpen} onOpenChange={setIsCreateUserOpen}>
+              <DialogTrigger asChild>
+                <Button className="bg-chat-blue hover:bg-chat-blue/90 text-white px-8 py-3 rounded-lg shadow-lg transition-all duration-200 hover:scale-105">
+                  <Plus className="w-5 h-5 mr-2" />
+                  Create User
+                </Button>
+              </DialogTrigger>
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>Create New User</DialogTitle>
@@ -159,36 +167,77 @@ const UserManagement = () => {
             </DialogContent>
           </Dialog>
         </div>
+        </div>
+      </div>
 
-        {/* Search and Stats */}
-        <div className="flex flex-col md:flex-row gap-4 mb-6">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+      {/* Main Content */}
+      <div className="p-8">
+        {/* Quick Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <Card className="p-6 bg-gradient-to-br from-chat-blue-light to-background border-chat-border hover:shadow-lg transition-all duration-200 animate-fade-in">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Total Users</p>
+                <p className="text-3xl font-bold text-chat-blue">{users.length}</p>
+              </div>
+              <div className="w-12 h-12 bg-chat-blue/10 rounded-full flex items-center justify-center">
+                <Users className="w-6 h-6 text-chat-blue" />
+              </div>
+            </div>
+          </Card>
+          
+          <Card className="p-6 bg-gradient-to-br from-green-50 to-background border-green-200 hover:shadow-lg transition-all duration-200 animate-fade-in" style={{ animationDelay: '0.1s' }}>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Active Users</p>
+                <p className="text-3xl font-bold text-green-600">{users.filter(u => u.status === 'active').length}</p>
+              </div>
+              <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                <UserCheck className="w-6 h-6 text-green-600" />
+              </div>
+            </div>
+          </Card>
+
+          <Card className="p-6 bg-gradient-to-br from-purple-50 to-background border-purple-200 hover:shadow-lg transition-all duration-200 animate-fade-in" style={{ animationDelay: '0.2s' }}>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Admins</p>
+                <p className="text-3xl font-bold text-purple-600">{users.filter(u => u.role === 'admin').length}</p>
+              </div>
+              <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+                <UserCheck className="w-6 h-6 text-purple-600" />
+              </div>
+            </div>
+          </Card>
+
+          <Card className="p-6 bg-gradient-to-br from-orange-50 to-background border-orange-200 hover:shadow-lg transition-all duration-200 animate-fade-in" style={{ animationDelay: '0.3s' }}>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Teams</p>
+                <p className="text-3xl font-bold text-orange-600">{teams.length}</p>
+              </div>
+              <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
+                <Users className="w-6 h-6 text-orange-600" />
+              </div>
+            </div>
+          </Card>
+        </div>
+
+        {/* Search Section */}
+        <Card className="mb-6 p-6 border-chat-border hover:shadow-lg transition-all duration-200">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
             <Input
               placeholder="Search users by name or email..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
+              className="pl-12 h-12 border-chat-border focus:border-chat-blue bg-background"
             />
           </div>
-          <div className="flex gap-4">
-            <Card className="px-4 py-2">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-foreground">{users.length}</div>
-                <div className="text-xs text-muted-foreground">Total Users</div>
-              </div>
-            </Card>
-            <Card className="px-4 py-2">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-green-600">{users.filter(u => u.status === 'active').length}</div>
-                <div className="text-xs text-muted-foreground">Active</div>
-              </div>
-            </Card>
-          </div>
-        </div>
+        </Card>
 
         {/* Users Table */}
-        <Card>
+        <Card className="border-chat-border shadow-lg animate-fade-in">
           <CardHeader>
             <CardTitle>Users</CardTitle>
           </CardHeader>
