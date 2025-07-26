@@ -1,6 +1,6 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useAuth } from './AuthContext';
+import { useAzureAuth } from './AzureAuthContext';
 
 const SubmissionsContext = createContext();
 
@@ -13,7 +13,7 @@ export const useSubmissions = () => {
 };
 
 export const SubmissionsProvider = ({ children }) => {
-  const { user } = useAuth();
+  const { user } = useAzureAuth();
   const [submissions, setSubmissions] = useState([]);
 
   // Load submissions from localStorage on mount
